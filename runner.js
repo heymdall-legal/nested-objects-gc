@@ -1,6 +1,6 @@
+const { spawn } = require('child_process');
 const scriptToRun = 'node index.mjs';
 
-const { spawn } = require('child_process');
 
 async function spawnChildProcess(args) {
     return new Promise((resolve, reject) => {
@@ -15,12 +15,18 @@ async function spawnChildProcess(args) {
     });
 }
 
-async function main() {
+async function testSingleType(type) {
     for (let count = 50_000; count <= 1_000_000; count += 50_000) {
-        await spawnChildProcess([count]);
+        await spawnChildProcess([count, type]);
     }
 
     console.log('Done');
 }
 
-main();
+(async () => {
+    await testSingleType('plain');
+    await testSingleType('array');
+    await testSingleType('nested');
+    await testSingleType('bunch');
+    await testSingleType('bunch10');
+})();

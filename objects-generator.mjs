@@ -39,10 +39,11 @@ export function createNestedObject(count) {
     return obj;
 }
 
-export function createBunchOfNestedObjects(count, depth) {
+export function createBunchOfNestedObjects(count, depth = 1000) {
+    const objectsCount = Math.floor(count / depth);
     const obj = {};
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < objectsCount; i++) {
         obj[i] = createNestedObject(depth);
     }
 

@@ -10,21 +10,21 @@ export function startObserving() {
     kinds[constants.NODE_PERFORMANCE_GC_MINOR] = 'minor';
     kinds[constants.NODE_PERFORMANCE_GC_INCREMENTAL] = 'incremental';
     kinds[constants.NODE_PERFORMANCE_GC_WEAKCB] = 'weakcb';
-    
+
     const counters = {};
-    
+
     const obs = new PerformanceObserver(list => {
         const entry = list.getEntries()[0];
         const entryKind = entry.detail.kind;
         const kind = kinds[entryKind];
-    
-    
+
+
         if (!counters[kind]) {
             counters[kind] = [];
         }
         counters[kind].push(entry.duration);
     });
-    
+
     obs.observe({ entryTypes: ['gc'] });
 
     return counters;
@@ -41,7 +41,7 @@ export function printStats(counters) {
 
     console.log("GC statistics:");
 
-    let majorGc = 0;
+    const averages = {};
 
     Object.keys(counters).forEach(kind => {
         const durations = counters[kind];
@@ -49,10 +49,8 @@ export function printStats(counters) {
         const avg = sum / durations.length;
         console.log(`Average duration of ${kind} GCs: ${avg}ms, count: ${durations.length}`);
 
-        if (kind === 'major') {
-            majorGc = avg;
-        }
+        averages[kind] = avg;
     });
 
-    return majorGc;
+    return averages;
 }
